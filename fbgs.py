@@ -6,7 +6,7 @@ import re
 
 @click.option("--all-people", "relation", flag_value="", default=True)
 @click.option("-f", "--friends", "relation", flag_value="me/friends/")
-@click.option("-r", "--friends-of-friends") # r = Second letter of Friends
+@click.option("-r", "--friends-of-friends", type=int) # r = Second letter of Friends
 @click.option("-k", "--friends-of", multiple=True) # k = Known by <user>
 @click.option("-!", "--non-friends", is_flag=True, default=False)
 
@@ -120,7 +120,7 @@ def parametrize_flag(flag, pattern):
     return pattern if flag else ""
 
 def parametrize_friends_of_friends(depth):
-    return "" if depth is None else "me/" + depth * "friend/"
+    return "" if depth is None else "me/" + ("friends/" * depth)
 
 def parametrize_users_born(year, month):
     if year is None:
