@@ -1,6 +1,7 @@
 import click
 import webbrowser
 import re
+import fbid
 
 @click.command()
 
@@ -102,12 +103,22 @@ def search(relation, friends_of_friends, friends_of, non_friends,
     else:
         webbrowser.open(url)
 
-def typify(argument, page=True):
+def resolve(argument, page=True):
     pages_named = "/pages-named" if page else ""
-    return f"{argument[1:]}" if argument.startswith("=") else f"str/{argument}{pages_named}"
+
+    if argument.startswith("="):
+        return f"{argument[1:]}"
+    elif argument.startswith("@"):
+        return fbid.get_id(argument[1:])
+    else:
+        return f"str/{argument}{pages_named}"
 
 def parametrize(argument, pattern, page=True):
-    return "" if argument is None else pattern % typify(argument, page)
+    if argument is None:
+        return ""
+    else:
+        formatted_argument = pattern % resolve(argument, page)
+        return "" if formatted_argument is None else formatted_argument
 
 def parametrize_all(arguments, pattern, page=True):
     result = ""
